@@ -22,10 +22,10 @@ Kzz = 1e6
 
 #### initialise the grid 
 
-gd = grid.grid(9.9e9,1.12e10,0.01,np.pi-0.01,200,2000,2.6)
+gd = grid.grid(9.9e9,1.181e10,0.01,np.pi-0.01,225,2000,2.)
 ry = grid.rays(gd,400,3.)
 fd = field.field(gd,1,1.25)
-sy = field.system(1.33e30,3.83e33,0.03*1.5e13,5e6,0.,2.35)
+sy = field.system(9.5e29,3.83e33,0.03*1.5e13,5e6,0.,2.35)
 
 fd.setup_iso_atm(sy,gd,True)
 
