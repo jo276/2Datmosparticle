@@ -56,7 +56,7 @@ def update_source(grid,field,system,dt,args=()):
 def update_source_jd(grid,field,rays,system,dt,args=()):
 
     update_source_numba(grid.ii,grid.io,grid.ji,grid.jo,field.Nparticles,system.Mp,system.mmw,grid.Rb,field.par_source,
-                    field.par_size,field.par_dens,field.par_dens_in,field.gas_P,field.gas_dens,field.gas_T,rays.tau_b,
+                    field.par_size,field.par_dens,field.par_dens_in,field.gas_P,field.gas_dens,field.gas_T,rays.tau_b_gas,
                     field.par_vr_drift,field.par_vth_drift,field.par_ar,field.par_ath,dt,args)
 
     #a_init = args[3]
