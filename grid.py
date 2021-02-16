@@ -110,6 +110,25 @@ class grid:
         self.A_r = np.outer(self.g2a*self.g31a,np.ones(self.NTH+3))
         self.A_th = np.outer(np.append(self.g31b,0.)*self.dRa,self.g32a)
 
+        # projected circular line-segement back to star
+        self.dRpro_back = np.zeros((self.NR+2, self.NTH+2))
+        # path length through cell
+        self.cell_dZ = np.zeros((self.NR+2,self.NTH+2))
+        for i in range(self.NR+2):
+            for j in range(self.index_theta_max):
+                # estimate two projected areas in r and theta then pick smallest
+                # remember z-axis of co-ordinate system points towards the star
+                dr_pro = np.fabs(self.dRa[i]/(np.sin(self.Tb[j]) + 1e-10)) # to avoid overflow
+                dt_pro = np.fabs((self.dTa[j]*self.Rb[i])/(np.cos(self.Tb[j])+1e-10))
+
+                self.dRpro_back[i,j] = min(dr_pro,dt_pro)
+
+                # now calculate path lengths and pick smallest one
+                dr_z = np.fabs(self.dRa[i]/(np.cos(self.Tb[j]) + 1e-10)) # to avoid overflow
+                dt_z = np.fabs((self.dTa[j]*self.Rb[i])/(np.sin(self.Tb[j])+1e-10))
+
+                self.cell_dZ[i,j] = min(dr_z,dt_z)
+
         return
 
 #### This contains the positions of the rays through the grid
