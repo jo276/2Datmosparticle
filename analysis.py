@@ -1,8 +1,8 @@
 import numpy as np
-#### written by JO Dec 2020 ###'#
+#### written by JO Dec 2020/Jan 2021 ###'#
 #### This file contains analysis functions
 
-def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav):
+def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_haze_flag=False):
 
     # this function performs a transmission spectrum as a function of wavelenth
     # Qext_vs_x is a Python interpolation object that provides the particles
@@ -12,6 +12,8 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav):
 
     # find the optical depth as a function of impact parameter through the domain 
     # we'll use the ray-tracing routine setup in the rays object
+
+    # no_haze_flag allows the switching off of the hazes to calculate pure gas spectra
 
     Rp = np.zeros(np.size(wav))
 
@@ -26,7 +28,10 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav):
 
         gas_opacity = 6e-3*(wav[i]/(0.3*1e-4))**(-4.) # H2 rayleigh scattering (Figure 1 Freedman et al. 2014)
 
-        extinction_total = extinction_par_2D + gas_opacity * field.gas_dens
+        if (no_haze_flag):
+            extinction_total = gas_opacity * field.gas_dens
+        else:
+            extinction_total = extinction_par_2D + gas_opacity * field.gas_dens
 
         rays.do_ray_trace(extinction_total)
 
@@ -38,7 +43,7 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav):
 
     return Rp
 
-def get_eclipse_spectrum(grid,field,rays,get_Q_back,get_Q_ext,wav):
+def get_eclipse_spectrum(grid,field,rays,get_Q_back,get_Q_ext,wav,no_haze_flag=False):
 
     # this function calculates an eclispe spectrum assuming pure back-scattering
     # either from the haze particles of Rayleigh scattering - assumes thermal emission is 
@@ -60,7 +65,10 @@ def get_eclipse_spectrum(grid,field,rays,get_Q_back,get_Q_ext,wav):
 
         gas_opacity = 6e-3*(wav[i]/(0.3*1e-4))**(-4.) # H2 rayleigh scattering (Figure 1 Freedman et al. 2014)
 
-        extinction_total = extinction_par_2D + gas_opacity * field.gas_dens
+        if (no_haze_flag):
+            extinction_total = gas_opacity * field.gas_dens
+        else:
+            extinction_total = extinction_par_2D + gas_opacity * field.gas_dens
 
         rays.do_ray_trace(extinction_total)
         rays.get_tau_grid(grid)
@@ -75,7 +83,10 @@ def get_eclipse_spectrum(grid,field,rays,get_Q_back,get_Q_ext,wav):
 
         kappa_rayleigh = 2./(3.*np.pi) * gas_opacity * (1. + np.cos(np.pi)**2.) # Rayleigh scattering is dipole
 
-        flux_scat_back = grid.cell_dZ * (kappa_rayleigh * field.gas_dens + np.sum(kappa_back*field.par_dens,axis=2)) * np.exp(-2.*tau_b_wav) # 2 includes optical depth of incoming and outgoing 
+        if (no_haze_flag):
+            flux_scat_back = grid.cell_dZ * (kappa_rayleigh * field.gas_dens) * np.exp(-2.*tau_b_wav) # 2 includes optical depth of incoming and outgoing 
+        else:
+            flux_scat_back = grid.cell_dZ * (kappa_rayleigh * field.gas_dens + np.sum(kappa_back*field.par_dens,axis=2)) * np.exp(-2.*tau_b_wav) # 2 includes optical depth of incoming and outgoing 
 
         # now integrate over entire disc
         Rcyl_disc = np.outer(grid.Rb,np.sin(grid.Tb))
