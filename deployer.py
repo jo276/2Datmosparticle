@@ -13,8 +13,8 @@ Haze_flux_grid = np.logspace(-16.,-10.,7)
 
 chdir = os.getcwd()
 
-for i in range(5,np.size(Kzz_grid)):
-    for j in range(6,np.size(Haze_flux_grid)):
+for i in range(np.size(Kzz_grid)):
+    for j in range(np.size(Haze_flux_grid)):
 
         wk_dir = "run_dir%d_%d"%(i,j)
 
