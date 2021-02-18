@@ -1,4 +1,4 @@
-#### THIS IS THE RUNNER FILE FOR A MORE MASSIVE HJ 0.7 Mjup 1.4Rjup
+#### THIS IS THE RUNNER FILE FOR A less MASSIVE HJ 0.5 Mjup 1.4Rjup
 
 import numpy as np
 import grid as grid
@@ -13,12 +13,13 @@ import Q_fits as Qfit
 from scipy.interpolate import InterpolatedUnivariateSpline
 
 #### Simulation parameters
-Nsteps = 1000000 # total number of timesteps to run
-Ndump = 3000 # output every this number of timesteps
-Nrat = 200000000 # update radiative transfer this number of time-steps
+Nsteps = 2500000 # total number of timesteps to run
+Ndump = 25000 # output every this number of timesteps
+Nrat = 20 # update radiative transfer this number of time-steps
 
-Haze_flux = 1e-13
-Kzz = 1e6
+Arad=False
+Haze_flux=1.000000e-10
+Kzz=1.000000e+10
 
 #### initialise the grid 
 
@@ -66,4 +67,7 @@ source_args = (Sdot,Pstar,sigma_P,a_init,tau_haze)
 #### Now run code 
 # initial dt
 dt =5.
-sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_soot,get_Qext=Qfit.get_Qpr_none)
+if (Arad):
+    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_soot,get_Qext=Qfit.get_Qext_soot)
+else:
+    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_none,get_Qext=Qfit.get_Qpr_none)
