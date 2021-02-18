@@ -17,9 +17,9 @@ Nsteps = 2500000 # total number of timesteps to run
 Ndump = 25000 # output every this number of timesteps
 Nrat = 20 # update radiative transfer this number of time-steps
 
-Arad=False
-Haze_flux=1.000000e-10
-Kzz=1.000000e+10
+Arad = True
+Haze_flux = 1e-13
+Kzz = 1e6
 
 #### initialise the grid 
 
