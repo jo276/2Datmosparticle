@@ -4,6 +4,8 @@ import os
 import numpy as np
 
 no_arad = True
+runner_template = "runner_HJ2.py"
+
 
 Kzz_grid = np.logspace(5.,10.,6)
 Haze_flux_grid = np.logspace(-16.,-10.,7)
@@ -22,7 +24,7 @@ for i in range(5,np.size(Kzz_grid)):
         os.chdir("2Datmosparticle")
         
         # now re-write runner file
-        f =open("runner_HJ2.py",'r')
+        f =open(runner_template,'r')
         filedata = f.read()
         f.close()
 
@@ -35,6 +37,8 @@ for i in range(5,np.size(Kzz_grid)):
         f = open("runner_use.py",'w')
         f.write(newfiledata)
         f.close()
+
+        os.system("qsub submit.sh")
             
         os.chdir(chdir)
 
