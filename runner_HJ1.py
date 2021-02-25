@@ -13,8 +13,8 @@ import Q_fits as Qfit
 from scipy.interpolate import InterpolatedUnivariateSpline
 
 #### Simulation parameters
-Nsteps = 1000000 # total number of timesteps to run
-Ndump = 3000 # output every this number of timesteps
+Nsteps = 2500000 # total number of timesteps to run
+Ndump = 25000 # output every this number of timesteps
 Nrat = 20 # update radiative transfer this number of time-steps
 
 Arad = True
