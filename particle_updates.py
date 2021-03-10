@@ -120,7 +120,23 @@ def get_qstar(ii,io,ji,jo,NR,NTH,Nparticles,q,ur_par,uth_par,dRb,dTb,dRa,dTa,g2b
     qth = np.zeros((NR+3,NTH+3,Nparticles))
     # do r first
     # limiter superbee
-    for i in prange(ii,io+2):
+    #for i in prange(ii,io+2):
+    #    for j in range(ji,jo+1):
+    #        for k in range(Nparticles):
+    #            if (i==io+1):
+    #                Dq_p = 0. # force first-order in boundary
+    #            else:
+    #                Dq_p = (q[i+1,j,k]-q[i,j,k])/dRb[i+1]
+    #            Dq_m = (q[i,j,k]-q[i-1,j,k])/dRb[i]
+    #            
+    #            sigma1 = minmod(Dq_p,2.*Dq_m)
+    #            sigma2 = minmod(2.*Dq_p,Dq_m)
+    #
+    #            dq[i,j,k] = maxmod(sigma1,sigma2)
+
+
+    # calculate limiter - vanleer
+    for i in range(ii,io+2):
         for j in range(ji,jo+1):
             for k in range(Nparticles):
                 if (i==io+1):
@@ -128,26 +144,10 @@ def get_qstar(ii,io,ji,jo,NR,NTH,Nparticles,q,ur_par,uth_par,dRb,dTb,dRa,dTa,g2b
                 else:
                     Dq_p = (q[i+1,j,k]-q[i,j,k])/dRb[i+1]
                 Dq_m = (q[i,j,k]-q[i-1,j,k])/dRb[i]
-                
-                sigma1 = minmod(Dq_p,2.*Dq_m)
-                sigma2 = minmod(2.*Dq_p,Dq_m)
-
-                dq[i,j,k] = maxmod(sigma1,sigma2)
-
-
-    # calculate limiter - vanleer
-    #for i in range(ii,io+2):
-    #    for j in range(ji,jo+1):
-    #        for k in range(Nparticles):
-    #            if (i==io+1):
-    #                Dq_p = 0. # force first-order in boundary
-    #            else:
-    #                Dq_p = (q[i+1,j,k]-q[i,j,k])/dRb[i+1]
-     #           Dq_m = (q[i,j,k]-q[i-1,j,k])/dRb[i]
-     #           if (Dq_p*Dq_m > 0.):
-     #               dq[i,j,k] = 2. * (Dq_p*Dq_m) / (Dq_m+Dq_p)
-     #           else:
-      #              dq[i,j,k] = 0.
+                if (Dq_p*Dq_m > 0.):
+                    dq[i,j,k] = 2. * (Dq_p*Dq_m) / (Dq_m+Dq_p)
+                else:
+                    dq[i,j,k] = 0.
     
 
     # get fluxes
@@ -166,23 +166,7 @@ def get_qstar(ii,io,ji,jo,NR,NTH,Nparticles,q,ur_par,uth_par,dRb,dTb,dRa,dTa,g2b
 
     # do th now
     # calculate limiter - super-bee
-    for i in prange(ii,io+1):
-        for j in range(ji,jo+2):
-            for k in range(Nparticles):
-                if (j==jo+1):
-                    Dq_p = 0. # force first-order in boundary
-                else:
-                    Dq_p = (q[i,j+1,k]-q[i,j,k])/dTb[j+1]
-                Dq_m = (q[i,j,k]-q[i,j-1,k])/dTb[j]
-
-                sigma1 = minmod(Dq_p,2.*Dq_m)
-                sigma2 = minmod(2.*Dq_p,Dq_m)
-
-                dq[i,j,k] = maxmod(sigma1,sigma2)
-                
-
-    # calculate limiter - van-leer
-    #for i in range(ii,io+1):
+    #for i in prange(ii,io+1):
     #    for j in range(ji,jo+2):
     #        for k in range(Nparticles):
     #            if (j==jo+1):
@@ -190,10 +174,26 @@ def get_qstar(ii,io,ji,jo,NR,NTH,Nparticles,q,ur_par,uth_par,dRb,dTb,dRa,dTa,g2b
     #            else:
     #                Dq_p = (q[i,j+1,k]-q[i,j,k])/dTb[j+1]
     #            Dq_m = (q[i,j,k]-q[i,j-1,k])/dTb[j]
-    #            if (Dq_p*Dq_m > 0.):
-    #                dq[i,j,k] = 2. * (Dq_p*Dq_m) / (Dq_m+Dq_p)
-    #            else:
-    #                dq[i,j,k] = 0.
+
+    #            sigma1 = minmod(Dq_p,2.*Dq_m)
+    #            sigma2 = minmod(2.*Dq_p,Dq_m)
+
+    #            dq[i,j,k] = maxmod(sigma1,sigma2)
+                
+
+    # calculate limiter - van-leer
+    for i in range(ii,io+1):
+        for j in range(ji,jo+2):
+            for k in range(Nparticles):
+                if (j==jo+1):
+                    Dq_p = 0. # force first-order in boundary
+                else:
+                    Dq_p = (q[i,j+1,k]-q[i,j,k])/dTb[j+1]
+                Dq_m = (q[i,j,k]-q[i,j-1,k])/dTb[j]
+                if (Dq_p*Dq_m > 0.):
+                    dq[i,j,k] = 2. * (Dq_p*Dq_m) / (Dq_m+Dq_p)
+                else:
+                    dq[i,j,k] = 0.
 
     # get fluxes
     for i in prange(ii,io+1):
