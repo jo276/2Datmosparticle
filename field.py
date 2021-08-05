@@ -24,6 +24,9 @@ class field:
 
     def __init__(self,grid,Nparticles,dens_int = 1.):
 
+        self.short_friction = True ## default to short friction time approx
+        self.Tstar = 5777. # temperature of star in K
+        
         # Nparticles is the number of particles in the grid
 
         self.Nparticles = Nparticles
@@ -40,19 +43,27 @@ class field:
         self.par_dens_in = np.zeros((grid.NR+2,grid.NTH+2,Nparticles)) + dens_int
         self.par_dens    = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
         self.par_vr      = np.zeros((grid.NR+3,grid.NTH+2,Nparticles))
+        self.par_Sr      = np.zeros((grid.NR+3,grid.NTH+2,Nparticles))
+        self.par_vr_st_r = np.zeros((grid.NR+3,grid.NTH+3,Nparticles))
+        self.par_vr_st_t = np.zeros((grid.NR+3,grid.NTH+3,Nparticles))
         self.par_vr_drift= np.zeros((grid.NR+3,grid.NTH+2,Nparticles))
         self.par_vth_drift=np.zeros((grid.NR+2,grid.NTH+3,Nparticles))
         self.par_vr_diff = np.zeros((grid.NR+3,grid.NTH+2,Nparticles))
+        self.par_vr_adv  = np.zeros((grid.NR+3,grid.NTH+2,Nparticles)) ### velcoity to use in advection scheme
+        self.par_vt_adv  = np.zeros((grid.NR+2,grid.NTH+3,Nparticles))
         self.par_vt_diff = np.zeros((grid.NR+2,grid.NTH+3,Nparticles))
         self.par_vth     = np.zeros((grid.NR+2,grid.NTH+3,Nparticles))
+        self.par_Sth     = np.zeros((grid.NR+2,grid.NTH+3,Nparticles))
+        self.par_vt_st_r = np.zeros((grid.NR+3,grid.NTH+3,Nparticles))
+        self.par_vt_st_t = np.zeros((grid.NR+3,grid.NTH+3,Nparticles))
         self.par_tstop   = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
-        self.par_K     = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
+        self.par_K       = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
         self.par_ar      = np.zeros((grid.NR+3,grid.NTH+2,Nparticles))
         self.par_ath     = np.zeros((grid.NR+3,grid.NTH+2,Nparticles))
-        self.par_source = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
-        self.par_tgrow = np.zeros((grid.NR+2,grid.NTH+2,Nparticles)) + 1e50
+        self.par_source  = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
+        self.par_tgrow   = np.zeros((grid.NR+2,grid.NTH+2,Nparticles)) + 1e50
         self.tstop_bgrid = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
-        self.par_diff_b = np.zeros((grid.NR+2,grid.NTH+2,Nparticles)) # diffusion contant on b grid
+        self.par_diff_b  = np.zeros((grid.NR+2,grid.NTH+2,Nparticles)) # diffusion contant on b grid
         self.div_Fdiff_numba = np.zeros((grid.NR+2,grid.NTH+2,Nparticles)) 
         self.Conc        = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
         self.Q           = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))

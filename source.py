@@ -100,6 +100,9 @@ def update_source_numba(ii,io,ji,jo,Nparticles,Mp,mmw,Rb,source,ps,pd,pid,gP,gd,
 
                 source[i,j,k] = (g_r * gd[i,j] * log_normal) * Sigma_dot * math.exp(-tau_b[i,j]/tau_haze)
 
+                # add pertubation to source term
+                #source[i,j,k] *= 10.**np.random.normal(loc=0,scale=1.)
+
                 drho = source[i,j,k] * dt
 
                 # drho is the density of small particles added over the time-step

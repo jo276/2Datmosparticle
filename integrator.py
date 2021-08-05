@@ -92,7 +92,7 @@ def first_order_update_semi_implict(dt,grid,field,rays,system,boundary_args=(),s
 
 def first_order_update_semi_implict_numba(dt,grid,field,rays,system,boundary_args=(),source_args=(),get_Q=None):
 
-    # this routine performs a first-order in time explicit update with semi-implicit update of particle
+    # this routine performs a first-order in time explicit update with a possible semi-implicit update of particle
     # velocity - it includes parallel numba optimization for use on large grids
     # the boundary update should be fast enough in pure numpy
 
@@ -108,17 +108,34 @@ def first_order_update_semi_implict_numba(dt,grid,field,rays,system,boundary_arg
 
     source.update_source_jd(grid,field,rays,system,dt,source_args)
 
-    # now do advection update
+    # now do advection updates
 
-    pu.advection_update_jd(grid,field,dt)
+    if (field.short_friction):
+
+        ### just density transport
+        pu.advection_update_jd(grid,field,dt)
+    else:
+        ## Diffusive updated is included as velocity term here - velocities computed in size update
+        # as velocities have changed due to source update need to update boundries
+        boundary.update_boundary(grid,field,boundary_args)
+        ## compute momenta
+        pu.compute_momenta_jd(grid,field)
+        ## do density advenction
+        pu.advection_update_jd(grid,field,dt)
+        ## do momentum advection
+        pu.momentum_advection_update_jd(grid,field,dt)
+        ## recalculate velocities
+        pu.recalculate_velocities_jd(grid,field)
+
  
     # boundary update
 
-    boundary.update_boundary(grid,field,boundary_args)
+    if (field.short_friction):
+        # do seperate diffusion update - otherwise included in advection as velocity
+        boundary.update_boundary(grid,field,boundary_args)
 
-    # now do diffusion update
-
-    pu.diffusion_update_jd(grid,field,dt)
+        # now do diffusion update
+        pu.diffusion_update_jd(grid,field,dt)
  
     # boundary update
 
@@ -152,8 +169,7 @@ def runner_semi_implicit_numba(CFL,Nsteps,Ndump,Noptical_depth,initial_dt,grid,f
 
         if (counter % Noptical_depth == 0):
             # update optical depth
-            pu.update_tau_b_par(field,grid,rays,get_Qpr)
-
+            pu.update_tau_b_par(field,grid,rays,get_Qext)
         # check for output
         if (counter % Ndump == 0):
             output_counter +=1

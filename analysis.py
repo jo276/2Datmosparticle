@@ -2,12 +2,12 @@ import numpy as np
 #### written by JO Dec 2020/Jan 2021 ###'#
 #### This file contains analysis functions
 
-def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_haze_flag=False):
+def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_aerosol_flag=False):
 
     # this function performs a transmission spectrum as a function of wavelenth
     # Qext_vs_x is a Python interpolation object that provides the particles
     # extinction cross-section as a function of optical paramter lambda and a
-    # Qext_vs_x is assumed to be a log-function so Qext = 10.** get_Q_ext(log10(lambda),log10(size))
+    # Qext_vs_x is assumed to be a log-function so Qext = 10.** get_Q_ext(log10(size),log10(lam))
     # lambda and size should be in cm
 
     # find the optical depth as a function of impact parameter through the domain 
@@ -19,7 +19,7 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_haze_flag=False):
 
     for i in range(np.size(wav)):
 
-        Qext_3D = 10.**get_Q_ext(np.log10(wav[i]),np.log10(field.par_size),grid=False)
+        Qext_3D = 10.**get_Q_ext(np.log10(field.par_size),np.log10(wav[i]),grid=False)
 
         kappa_3D = 3./4. * Qext_3D / field.par_size / field.par_dens_in
 
@@ -28,7 +28,7 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_haze_flag=False):
 
         gas_opacity = 6e-3*(wav[i]/(0.3*1e-4))**(-4.) # H2 rayleigh scattering (Figure 1 Freedman et al. 2014)
 
-        if (no_haze_flag):
+        if (no_aerosol_flag):
             extinction_total = gas_opacity * field.gas_dens
         else:
             extinction_total = extinction_par_2D + gas_opacity * field.gas_dens
