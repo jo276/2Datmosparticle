@@ -9,17 +9,24 @@ import integrator as integrator
 import source as sc
 import analysis as an
 import Q_fits as Qfit
+import time
 
 from scipy.interpolate import InterpolatedUnivariateSpline
 
+
 #### Simulation parameters
-Nsteps = 2500000 # total number of timesteps to run
-Ndump = 25000 # output every this number of timesteps
+Nsteps = 20000001 # total number of timesteps to run
+Ndump = 2500 # output every this number of timesteps
 Nrat = 20 # update radiative transfer this number of time-steps
+Short_Fric = False ## whether to use short friction time approx or not
 
 Arad = True
-Haze_flux = 1e-13
+Haze_flux = 1e-14
 Kzz = 1e6
+
+Tstar = 5777.
+
+
 
 #### initialise the grid 
 
@@ -30,10 +37,17 @@ sy = field.system(9.5e29,3.83e33,0.03*1.5e13,5e6,0.,2.35)
 
 fd.setup_iso_atm(sy,gd,True)
 
-sy.kappa_star = 1e-2
+fd.short_friction = Short_Fric
+
+fd.Tstar = Tstar
+
+sy.kappa_star = 4e-3 ### value from Guillot et al. (2010)
 
 ry.get_tau_grid_analytic(gd,sy)
 
+#### Below is for testing ray-tracing scheme on analytic gas profile
+#ry.do_ray_trace(fd.gas_dens*sy.kappa_star) ### using analytic gas optical depth calculation
+#pu.update_tau_b_gas(fd,gd,ry,sy)
 ### Now initialise the initial conditions
 
 fd.par_K[:] = Kzz
@@ -48,7 +62,6 @@ bd.update_boundary(gd,fd)
 
 kappa_bol = sy.kappa_star
 
-#ry.do_ray_trace(fd.gas_dens*kappa_bol)
 
 Pstar = 1e-6 * 1e6
 sigma_P = 0.5
@@ -67,7 +80,10 @@ source_args = (Sdot,Pstar,sigma_P,a_init,tau_haze)
 #### Now run code 
 # initial dt
 dt =5.
+start_time = time.time()
 if (Arad):
     sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_soot,get_Qext=Qfit.get_Qext_soot)
 else:
     sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_none,get_Qext=Qfit.get_Qpr_none)
+
+print("Execution time %s s" % (time.time()-start_time))
