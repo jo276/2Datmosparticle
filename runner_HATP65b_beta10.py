@@ -40,7 +40,8 @@ Kzz = 1e6
 
 beta_want = 10.
 a_want = a_actual * np.sqrt(beta_actual/beta_want)
-
+Mdot_actual = 1.7e10
+Mdot_use = Mdot_actual * (a_actual/a_want)**2.
 
 
 Fbol = Lstar / (4. * np.pi * a_actual**2.)
@@ -52,7 +53,7 @@ Tequil = (Fbol/4./5.6704e-5)**(0.25)
 gd = grid.grid(1.3e+10,1.65e10,0.01,np.pi-0.01,152,1000,2.)
 ry = grid.rays(gd,400,3.)
 fd = field.field(gd,1,1.25)
-sy = field.system(Mp,Rp,a_want,1e6,1.7e10,2.35,Tequil)
+sy = field.system(Mp,Rp,a_want,1e6,Mdot_use,2.35,Tequil)
 
 fd.setup_iso_atm(sy,gd,True)
 
