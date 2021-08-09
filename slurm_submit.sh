@@ -91,7 +91,7 @@ export OMP_NUM_THREADS=56
 
 #! Choose this for a pure shared-memory OpenMP parallel program on a single node:
 #! (OMP_NUM_THREADS threads will be created):
-CMD="python runner_HJ2.py"
+CMD="python runner_use.py"
 
 #! Choose this for a MPI code (possibly using OpenMP) using OpenMPI:
 #CMD="mpirun -npernode $mpi_tasks_per_node -np $np $application $options"
