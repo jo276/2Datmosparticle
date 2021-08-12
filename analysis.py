@@ -26,7 +26,7 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_aerosol_flag=Fals
         extinction_3D = kappa_3D * field.par_dens 
         extinction_par_2D = np.sum(extinction_3D,axis=2) # sum all the size bins
 
-        gas_opacity = 6e-3*(wav[i]/(0.3*1e-4))**(-4.) # H2 rayleigh scattering (Figure 1 Freedman et al. 2014)
+        gas_opacity = 2.3e-3*(wav[i]/(0.3*1e-4))**(-4.) # H2-He rayleigh scattering extracted by fitting opacity data in petitRADTRANS code
 
         if (no_aerosol_flag):
             extinction_total = gas_opacity * field.gas_dens
@@ -39,7 +39,9 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_aerosol_flag=Fals
         Flux_obs = np.trapz(2.*np.pi*rays.Xrays[rays.id_terminator:]*np.exp(-rays.tau_end[rays.id_terminator:]),rays.Xrays[rays.id_terminator:])
         Flux_exp = np.pi*rays.Xrays[-1]**2.
 
-        Rp[i] = rays.Xrays[-1]*np.sqrt(1.-Flux_obs/Flux_exp)
+        #Area_effective = np.trapz(2.*np.pi*rays.Xrays[rays.id_terminator:]*(1.-np.exp(-rays.tau_end[rays.id_terminator:])),rays.Xrays[rays.id_terminator:]) + np.pi * rays.Xrays[rays.id_terminator]**2.
+
+        Rp[i] = rays.Xrays[-1]*np.sqrt(1.-Flux_obs/Flux_exp) # np.sqrt(Area_effective/np.pi) 
 
     return Rp
 
@@ -63,7 +65,7 @@ def get_eclipse_spectrum(grid,field,rays,get_Q_back,get_Q_ext,wav,no_haze_flag=F
         extinction_3D = kappa_3D * field.par_dens 
         extinction_par_2D = np.sum(extinction_3D,axis=2) # sum all the size bins
 
-        gas_opacity = 6e-3*(wav[i]/(0.3*1e-4))**(-4.) # H2 rayleigh scattering (Figure 1 Freedman et al. 2014)
+        gas_opacity = 2.3e-3*(wav[i]/(0.3*1e-4))**(-4.) # H2 rayleigh scattering
 
         if (no_haze_flag):
             extinction_total = gas_opacity * field.gas_dens
