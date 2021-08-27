@@ -2,7 +2,7 @@ import numpy as np
 #### written by JO Dec 2020/Jan 2021 ###'#
 #### This file contains analysis functions
 
-def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_aerosol_flag=False):
+def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_aerosol_flag=False,use_external_tran_spec=False,get_tau=None):
 
     # this function performs a transmission spectrum as a function of wavelenth
     # Qext_vs_x is a Python interpolation object that provides the particles
@@ -28,15 +28,31 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_aerosol_flag=Fals
 
         gas_opacity = 2.3e-3*(wav[i]/(0.3*1e-4))**(-4.) # H2-He rayleigh scattering extracted by fitting opacity data in petitRADTRANS code
 
-        if (no_aerosol_flag):
-            extinction_total = gas_opacity * field.gas_dens
+        if (use_external_tran_spec):
+            weight = 0.
         else:
-            extinction_total = extinction_par_2D + gas_opacity * field.gas_dens
+            weight = 1.
+
+        if (no_aerosol_flag):
+            extinction_total = weight * gas_opacity * field.gas_dens
+        else:
+            extinction_total = extinction_par_2D + weight * gas_opacity * field.gas_dens
 
         rays.do_ray_trace(extinction_total)
 
+        if (use_external_tran_spec):
+            ### get taus from gas coming from external transmission spectrum
+            if (get_tau == None):
+                print( "Error Must specifiy tau_interpolation for aersol free spectrum")
+                Rp = -1.
+                return
+
+            tau_gas = get_tau(rays.Xrays[rays.id_terminator:],np.log10(wav[i]),grid=False)
+        else:
+            tau_gas = 0.
+
         # now calculate Rp in transmission
-        Flux_obs = np.trapz(2.*np.pi*rays.Xrays[rays.id_terminator:]*np.exp(-rays.tau_end[rays.id_terminator:]),rays.Xrays[rays.id_terminator:])
+        Flux_obs = np.trapz(2.*np.pi*rays.Xrays[rays.id_terminator:]*np.exp(-rays.tau_end[rays.id_terminator:]-tau_gas),rays.Xrays[rays.id_terminator:])
         Flux_exp = np.pi*rays.Xrays[-1]**2.
 
         #Area_effective = np.trapz(2.*np.pi*rays.Xrays[rays.id_terminator:]*(1.-np.exp(-rays.tau_end[rays.id_terminator:])),rays.Xrays[rays.id_terminator:]) + np.pi * rays.Xrays[rays.id_terminator]**2.
