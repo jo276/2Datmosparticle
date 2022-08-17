@@ -21,7 +21,7 @@
 #! 3420 MiB of memory per CPU.
 #SBATCH --ntasks=56
 #! How much wallclock time will be required?
-#SBATCH --time=36:00:00
+#SBATCH --time=20:00:00
 #! What types of email messages do you wish to receive?
 #
 #! Uncomment this to prevent the job from being requeued (e.g. if
