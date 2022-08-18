@@ -48,7 +48,7 @@ def get_Qext_soot(size,Tstar):
 
 def get_Qpr_sil(size,Tstar):
     
-    # fit to the radiation pressure efficiency for soot 
+    # fit to the radiation pressure efficiency for MgSio4
     # use numexpr for rapid evaluation of large arrays
     # size is an array in cm
 
@@ -69,7 +69,7 @@ def get_Qpr_sil(size,Tstar):
 
 def get_Qext_sil(size,Tstar):
     
-    # fit to the extinction efficiency for soot 
+    # fit to the extinction efficiency for MgSio4
     # use numexpr for rapid evaluation of large arrays
     # size is an array in cm
 
@@ -81,6 +81,48 @@ def get_Qext_sil(size,Tstar):
     a6 = 8.30987144e-01
     a7 = 1.46615953e-01
     a8 = 3.83631723e+00
+
+    Tfactor = Tstar / 5777.
+    
+    Qext = ne.evaluate("1./(1.+(size*Tfactor/(a1*1e-4))**(-a8)) + a2 /(exp(1e-4*a3/size/Tfactor)**a4+(size*Tfactor/(a5*1e-4))**a6)**a7")
+   
+    return Qext
+
+def get_Qext_silFe(size,Tstar):
+    
+    # fit to the extinction efficiency for Iron Rich Silicates
+    # use numexpr for rapid evaluation of large arrays
+    # size is an array in cm
+
+    a1 = 1.96102911e-01
+    a2 = 5.56783052e+00
+    a3 = 2.01369206e+00
+    a4 = 1.64474071e+00
+    a5 = 3.10609313e-04
+    a6 = 2.32237854e+00
+    a7 = 6.33446529e-02
+    a8 = 1.33380840e+00
+
+    Tfactor = Tstar / 5777.
+    
+    Qpr = ne.evaluate("1./(1.+(size*Tfactor/(a1*1e-4))**(-a8)) + a2 /(exp(1e-4*a3/size/Tfactor)**a4+(size*Tfactor/(a5*1e-4))**a6)**a7")
+   
+    return Qpr
+
+def get_Qpr_silFe(size,Tstar):
+    
+    # fit to the radiation pressure efficiency for Iron Rich Silicates
+    # use numexpr for rapid evaluation of large arrays
+    # size is an array in cm
+
+    a1 = 0.25250472
+    a2 = 2.39379625
+    a3 = 0.51461849
+    a4 = 0.41928208
+    a5 = 0.31280241
+    a6 = 1.4482268
+    a7 = 0.77682399
+    a8 = 1.21686716
 
     Tfactor = Tstar / 5777.
     
