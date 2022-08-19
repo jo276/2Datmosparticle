@@ -74,7 +74,7 @@ def get_eclipse_spectrum(grid,field,rays,get_Q_back,get_Q_ext,wav,no_haze_flag=F
         # first task is to calculate optical depth to each point in the domain 
         # so we can consider how much stellar light is scattered back. 
 
-        Qext_3D = 10.**get_Q_ext(np.log10(wav[i]),np.log10(field.par_size),grid=False)
+        Qext_3D = 10.**get_Q_ext(np.log10(field.par_size),np.log10(wav[i]),grid=False)
 
         kappa_3D = 3./4. * Qext_3D / field.par_size / field.par_dens_in
 
@@ -95,11 +95,12 @@ def get_eclipse_spectrum(grid,field,rays,get_Q_back,get_Q_ext,wav,no_haze_flag=F
         tau_b_wav = np.copy(rays.tau_b_par)
 
         # now need to find flux in each cell back-scattered to observer
-        Qback_par = 10.**get_Q_back(np.log10(wav[i]),np.log10(field.par_size),grid=False)
+        ## Qback is taken to be the radar backscattering efficiency / 4pi (see Bohren & Huffman)
+        Qback_par = 10.**get_Q_back(np.log10(field.par_size),np.log10(wav[i]),grid=False)
 
         kappa_back = 3./4. * Qback_par / field.par_size / field.par_dens_in
 
-        kappa_rayleigh = 2./(3.*np.pi) * gas_opacity * (1. + np.cos(np.pi)**2.) # Rayleigh scattering is dipole
+        kappa_rayleigh = 3./(16.*np.pi) * gas_opacity * (1. + np.cos(np.pi)**2.) # Rayleigh scattering is dipole
 
         if (no_haze_flag):
             flux_scat_back = grid.cell_dZ * (kappa_rayleigh * field.gas_dens) * np.exp(-2.*tau_b_wav) # 2 includes optical depth of incoming and outgoing 
