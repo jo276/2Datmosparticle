@@ -38,7 +38,7 @@ Kzz = 1e6
 
 
 
-beta_want = 1.
+beta_want = 6.
 a_want = a_actual * np.sqrt(beta_actual/beta_want)
 Mdot_actual = 0.#1.7e10
 Mdot_use = Mdot_actual * (a_actual/a_want)**2.
