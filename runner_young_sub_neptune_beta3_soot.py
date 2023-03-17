@@ -14,14 +14,14 @@ import time
 from scipy.interpolate import InterpolatedUnivariateSpline
 
 #### star properties
-Tstar = 5835.0
-Lstar = 1.39626304e34
+Tstar = 5777.
+Lstar = 3.83e33
 
 #### planet properties
-beta_actual = 6.73 ## beta of actual planets at 0.1microns with silicates
-a_actual = 0.03951*1.5e13
-Mp = 1.00056e+30
-Rp = 1.39626304e34
+beta_actual = 9.17 ## beta of actual planets at 0.1microns with silicates
+a_actual = 0.03*1.5e13
+Mp = 4.*5.97e27
+Rp = 6.*6.371e8
 
 
 
@@ -38,10 +38,11 @@ Kzz = 1e6
 
 
 
-beta_want = 10.
+beta_want = 3.
 a_want = a_actual * np.sqrt(beta_actual/beta_want)
-Mdot_actual = 1.7e10
+Mdot_actual = 0.#1.7e10
 Mdot_use = Mdot_actual * (a_actual/a_want)**2.
+
 
 
 Fbol = Lstar / (4. * np.pi * a_actual**2.)
@@ -50,8 +51,8 @@ Tequil = (Fbol/4./5.6704e-5)**(0.25)
 
 #### initialise the grid 
 
-gd = grid.grid(1.3e+10,1.65e10,0.01,np.pi-0.01,152,1000,2.)
-ry = grid.rays(gd,400,3.)
+gd = grid.grid(1.5e+9,1.5e10,0.01,np.pi-0.01,302,370,1.1)
+ry = grid.rays(gd,200,3.)
 fd = field.field(gd,1,1.25)
 sy = field.system(Mp,Rp,a_want,1e6,Mdot_use,2.35,Tequil)
 
@@ -86,7 +87,7 @@ kappa_bol = sy.kappa_star
 Pstar = 1e-6 * 1e6
 sigma_P = 0.5
 a_init = 1e-7
-stype = 2 ## cloud-like
+stype = 0 ## cloud-like
 cloud_width = 0.05
 
 # calculate optical depth for removal of haze production
@@ -103,7 +104,7 @@ source_args = (stype,Sdot,Pstar,sigma_P,a_init,tau_haze,cloud_width)
 dt =5.
 start_time = time.time()
 if (Arad):
-    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_sil,get_Qext=Qfit.get_Qext_sil)
+    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_soot,get_Qext=Qfit.get_Qext_soot)
 else:
     sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_none,get_Qext=Qfit.get_Qpr_none)
 

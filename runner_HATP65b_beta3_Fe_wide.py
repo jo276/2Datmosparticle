@@ -38,10 +38,11 @@ Kzz = 1e6
 
 
 
-beta_want = 10.
+beta_want = 3.
 a_want = a_actual * np.sqrt(beta_actual/beta_want)
 Mdot_actual = 1.7e10
 Mdot_use = Mdot_actual * (a_actual/a_want)**2.
+
 
 
 Fbol = Lstar / (4. * np.pi * a_actual**2.)
@@ -86,7 +87,7 @@ kappa_bol = sy.kappa_star
 Pstar = 1e-6 * 1e6
 sigma_P = 0.5
 a_init = 1e-7
-stype = 2 ## cloud-like
+stype = 0 ## cloud-like
 cloud_width = 0.05
 
 # calculate optical depth for removal of haze production
@@ -103,7 +104,7 @@ source_args = (stype,Sdot,Pstar,sigma_P,a_init,tau_haze,cloud_width)
 dt =5.
 start_time = time.time()
 if (Arad):
-    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_sil,get_Qext=Qfit.get_Qext_sil)
+    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_silFe,get_Qext=Qfit.get_Qext_silFe)
 else:
     sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_none,get_Qext=Qfit.get_Qpr_none)
 

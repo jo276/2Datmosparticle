@@ -44,6 +44,7 @@ Mdot_actual = 1.7e10
 Mdot_use = Mdot_actual * (a_actual/a_want)**2.
 
 
+
 Fbol = Lstar / (4. * np.pi * a_actual**2.)
 
 Tequil = (Fbol/4./5.6704e-5)**(0.25)
@@ -103,7 +104,7 @@ source_args = (stype,Sdot,Pstar,sigma_P,a_init,tau_haze,cloud_width)
 dt =5.
 start_time = time.time()
 if (Arad):
-    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_sil,get_Qext=Qfit.get_Qext_sil)
+    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_silFe,get_Qext=Qfit.get_Qext_silFe)
 else:
     sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_none,get_Qext=Qfit.get_Qpr_none)
 
