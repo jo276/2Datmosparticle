@@ -26,19 +26,19 @@ Rp = 1.39626304e34
 
 
 #### Simulation parameters
-Nsteps = 2000# total number of timesteps to run
-Ndump = 10 # output every this number of timesteps
+Nsteps = 20000001# total number of timesteps to run
+Ndump = 50000 # output every this number of timesteps
 Nrat = 20 # update radiative transfer this number of time-steps
 Short_Fric = False ## whether to use short friction time approx or not
 
-Arad = False
+Arad = True
 Haze_flux = 1e-13
 Kzz = 1e6
 
 
 
 
-beta_want = 6.
+beta_want = 10.
 a_want = a_actual * np.sqrt(beta_actual/beta_want)
 Mdot_actual = 1.7e10
 Mdot_use = Mdot_actual * (a_actual/a_want)**2.
@@ -105,7 +105,7 @@ source_args = (stype,Sdot,Pstar,sigma_P,a_init,1.,cloud_width)
 dt =5.
 start_time = time.time()
 if (Arad):
-    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_sil,get_Qext=Qfit.get_Qext_sil)
+    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_soot,get_Qext=Qfit.get_Qext_soot)
 else:
     sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_none,get_Qext=Qfit.get_Qpr_none)
 

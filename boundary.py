@@ -20,21 +20,21 @@ def update_boundary(grid,field,args=()):
     field.par_vth [grid.io+1,:,:] = field.par_vth[grid.io,:,:]
     field.par_vt_diff [grid.io+1,:,:] = field.par_vt_diff[grid.io,:,:]
 
-    # inner th and outer th assumed to be refection
+    # inner th and outer th are periodic
 
-    field.par_dens[:,grid.ji-1,:]=field.par_dens[:,grid.ji,:]
-    field.par_vr[:,grid.ji-1,:] = field.par_vr[:,grid.ji,:]
-    field.par_vth[:,grid.ji-1:grid.ji,:] = 0. 
+    field.par_dens[:,grid.ji-1,:]=field.par_dens[:,grid.jo,:]
+    field.par_vr[:,grid.ji-1,:] = field.par_vr[:,grid.jo,:]
+    field.par_vth[:,grid.ji-1:grid.ji,:] = field.par_vth[:,grid.jo:grid.jo+1,:] 
 
-    field.par_vr_diff[:,grid.ji-1,:] = field.par_vr_diff[:,grid.ji,:]
-    field.par_vt_diff[:,grid.ji-1:grid.ji,:] = 0. 
+    field.par_vr_diff[:,grid.ji-1,:] = field.par_vr_diff[:,grid.jo,:]
+    field.par_vt_diff[:,grid.ji-1:grid.ji,:] = field.par_vt_diff[:,grid.jo:grid.jo+1,:] 
     
-    field.par_dens[:,grid.jo+1,:] = field.par_dens[:,grid.jo,:]
-    field.par_vr[:,grid.jo+1,:] = field.par_vr[:,grid.jo,:]
-    field.par_vth[:,grid.jo+1:,:] = 0.
+    field.par_dens[:,grid.jo+1,:] = field.par_dens[:,grid.ii,:]
+    field.par_vr[:,grid.jo+1,:] = field.par_vr[:,grid.ii,:]
+    field.par_vth[:,grid.jo+2,:] = field.par_vth[:,grid.ii+1,:]
 
-    field.par_vr_diff[:,grid.jo+1,:] = field.par_vr_diff[:,grid.jo,:]
-    field.par_vt_diff[:,grid.jo+1:,:] = 0.
+    field.par_vr_diff[:,grid.jo+1,:] = field.par_vr_diff[:,grid.ii,:]
+    field.par_vt_diff[:,grid.jo+2,:] = field.par_vt_diff[:,grid.ii+1,:]
 
     # floor
     field.par_dens[field.par_dens < 1e-40] = 1e-40
