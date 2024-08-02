@@ -55,7 +55,7 @@ Tequil = (Fbol/4./5.6704e-5)**(0.25)
 gd = grid.grid(1.3e+10,1.65e10,0.0,2.*np.pi,152,2000,2.)
 ry = grid.rays(gd,200,2.)
 fd = field.field(gd,1,1.25)
-sy = field.system(Mp,Rp,a_want,1e6,Mdot_use,2.35,Tequil)
+sy = field.system(Mp,Lstar,a_want,1e6,Mdot_use,2.35,Tequil)
 
 fd.setup_iso_atm(sy,gd,True)
 
