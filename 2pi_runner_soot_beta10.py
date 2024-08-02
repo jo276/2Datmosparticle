@@ -18,7 +18,8 @@ Tstar = 5835.0
 Lstar = 1.39626304e34
 
 #### planet properties
-beta_actual = 6.73 ## beta of actual planets at 0.1microns with silicates
+#beta_actual = 6.73 ## beta of actual planets at 0.1microns with silicates
+beta_actual = 26.856709 ## beta of actual planet at 0.1 microns with soots
 a_actual = 0.03951*1.5e13
 Mp = 1.00056e+30
 Rp = 1.39626304e34
@@ -26,13 +27,13 @@ Rp = 1.39626304e34
 
 
 #### Simulation parameters
-Nsteps = 20000001# total number of timesteps to run
-Ndump = 50000 # output every this number of timesteps
+Nsteps = 4000#20000001# total number of timesteps to run
+Ndump = 50 # output every this number of timesteps
 Nrat = 20 # update radiative transfer this number of time-steps
 Short_Fric = False ## whether to use short friction time approx or not
 
 Arad = True
-Haze_flux = 1e-13
+Haze_flux = 1e-12
 Kzz = 1e6
 
 
@@ -77,8 +78,8 @@ Sdot = Haze_flux
 
 fd.par_dens[:,:,0] = 1e-40
 
-fd.gas_vth[:] = np.outer(1e2 + 1e5 * np.exp(-np.log10(ry.tau_b_gas[:,1])**2./(2.*1.**2.)),np.ones(gd.NTH+3))
-print (fd.gas_vth[10,10])
+fd.gas_vth[:] = 0.#np.outer(1e2 + 1e5 * np.exp(-np.log10(ry.tau_b_gas[:,1])**2./(2.*1.**2.)),np.ones(gd.NTH+3))
+#print (fd.gas_vth[10,10])
 
 bd.update_boundary(gd,fd)
 
@@ -88,16 +89,16 @@ kappa_bol = sy.kappa_star
 Pstar = 1e-6 * 1e6
 sigma_P = 0.5
 a_init = 1e-7
-stype = 1 ## cloud-like
+stype = 1 ## 
 cloud_width = 0.03
 
 # calculate optical depth for removal of haze production
 
-#get_tau_haze = InterpolatedUnivariateSpline(fd.gas_P[::-1,gd.NTH//2+1],ry.tau_b[::-1,gd.NTH//2+1])
+get_tau_haze = InterpolatedUnivariateSpline(fd.gas_P[::-1,1],ry.tau_b[::-1,1])
 
-#tau_haze = get_tau_haze(Pstar + 2.*sigma_P)
+tau_haze = get_tau_haze(Pstar + 2.*sigma_P)
 fd.par_size[:] = a_init
-source_args = (stype,Sdot,Pstar,sigma_P,a_init,1.,cloud_width)
+source_args = (stype,Sdot,Pstar,sigma_P,a_init,tau_haze,cloud_width)
 
 
 #### Now run code 
