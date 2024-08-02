@@ -32,14 +32,14 @@ Ndump = 50000 # output every this number of timesteps
 Nrat = 20 # update radiative transfer this number of time-steps
 Short_Fric = False ## whether to use short friction time approx or not
 
-Arad = False
+Arad = True
 Haze_flux = 1e-12
 Kzz = 1e6
 
 
 
 
-beta_want = 10.
+beta_want = 1.
 a_want = a_actual * np.sqrt(beta_actual/beta_want)
 Mdot_actual = 0.
 Mdot_use = Mdot_actual * (a_actual/a_want)**2.
