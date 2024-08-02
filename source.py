@@ -113,7 +113,7 @@ def update_source_numba(ii,io,ji,jo,Nparticles,Mp,mmw,Rb,Tb,source,ps,pd,pid,gP,
                 # add optical depth for hazes
                 if (stype == 1):
                     ## haze-like cut-off
-                    source[i,j,k] *= math.exp(-tau_b[i,j]*100.)
+                    source[i,j,k] *= math.exp(-tau_b[i,j]/tau_haze)
                 elif (stype ==2):
                     # add cut-off in angle for cloud at terminator
                     source[i,j,k] *= math.exp(-(Tb[j] - 11.*math.pi/6.)**2./(2.*cloud_width**2.))

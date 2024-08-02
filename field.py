@@ -63,7 +63,7 @@ class field:
         self.par_tstop   = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
         self.par_K       = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
         self.par_ar      = np.zeros((grid.NR+3,grid.NTH+2,Nparticles))
-        self.par_ath     = np.zeros((grid.NR+3,grid.NTH+2,Nparticles))
+        self.par_ath     = np.zeros((grid.NR+2,grid.NTH+3,Nparticles))
         self.par_source  = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))
         self.par_tgrow   = np.zeros((grid.NR+2,grid.NTH+2,Nparticles)) + 1e50
         self.tstop_bgrid = np.zeros((grid.NR+2,grid.NTH+2,Nparticles))

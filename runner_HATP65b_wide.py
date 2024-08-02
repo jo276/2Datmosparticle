@@ -26,12 +26,12 @@ Rp = 1.39626304e34
 
 
 #### Simulation parameters
-Nsteps = 2000# total number of timesteps to run
+Nsteps = 1000# total number of timesteps to run
 Ndump = 10 # output every this number of timesteps
 Nrat = 20 # update radiative transfer this number of time-steps
 Short_Fric = False ## whether to use short friction time approx or not
 
-Arad = False
+Arad = True
 Haze_flux = 1e-13
 Kzz = 1e6
 
@@ -77,7 +77,7 @@ Sdot = Haze_flux
 
 fd.par_dens[:,:,0] = 1e-40
 
-fd.gas_vth[:] = np.outer(1e2 + 1e5 * np.exp(-np.log10(ry.tau_b_gas[:,1])**2./(2.*1.**2.)),np.ones(gd.NTH+3))
+fd.gas_vth[:] = 0.*np.outer(1e2 + 1e5 * np.exp(-np.log10(ry.tau_b_gas[:,1])**2./(2.*1.**2.)),np.ones(gd.NTH+3))
 print (fd.gas_vth[10,10])
 
 bd.update_boundary(gd,fd)
@@ -93,19 +93,20 @@ cloud_width = 0.03
 
 # calculate optical depth for removal of haze production
 
-#get_tau_haze = InterpolatedUnivariateSpline(fd.gas_P[::-1,gd.NTH//2+1],ry.tau_b[::-1,gd.NTH//2+1])
+get_tau_haze = InterpolatedUnivariateSpline(fd.gas_P[::-1,1],ry.tau_b[::-1,1])
 
-#tau_haze = get_tau_haze(Pstar + 2.*sigma_P)
+tau_haze = get_tau_haze(Pstar + 2.*sigma_P)
 fd.par_size[:] = a_init
-source_args = (stype,Sdot,Pstar,sigma_P,a_init,1.,cloud_width)
+source_args = (stype,Sdot,Pstar,sigma_P,a_init,tau_haze,cloud_width)
 
 
 #### Now run code 
 # initial dt
 dt =5.
 start_time = time.time()
+print("hello")
 if (Arad):
-    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_sil,get_Qext=Qfit.get_Qext_sil)
+    sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_soot,get_Qext=Qfit.get_Qext_soot)
 else:
     sim_time, dt = integrator.runner_semi_implicit_numba(0.45,Nsteps,Ndump,Nrat,dt,gd,fd,ry,sy,source_args=source_args,get_Qpr=Qfit.get_Qpr_none,get_Qext=Qfit.get_Qpr_none)
 

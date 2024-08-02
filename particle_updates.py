@@ -969,15 +969,16 @@ def get_tgrow_numba(vrd,vtd,pd,pid,pa,gT,gd,tgrow,mmw,ii,io,ji,jo,Nparticles):
 
                 delta_v = math.sqrt((vr_b**2. + vt_b**2.)/2.) # RMS deltav
 
-                par_num_dens = pd[i,j,k]/(4./3.*math.pi*pid[i,j,k]*pa[i,j,k]**3.)
-
+                par_mass = 4./3.*math.pi*pid[i,j,k]*pa[i,j,k]**3. # particle mass
+                par_num_dens = pd[i,j,k]/(par_mass)
+    
                 # growth due to differential velocity
                 inv_tgrow = (0.5 * par_num_dens * math.pi * (2. * pa[i,j,k])**2. * delta_v)
                 # growth due to brownian motion
                 # Brownian motion velcity
-                Vbm = math.sqrt(16. * kb * gT[i,j]/(math.pi * mmw * mh))
+                Vbm = math.sqrt(16. * kb * gT[i,j]/(math.pi * par_mass))
                 # Mean Thermal velocity
-                Vth = Vbm / math.sqrt(2.)
+                Vth = math.sqrt(8.  * kb * gT[i,j]/(math.pi * mmw * mh))
                 # molecular visocsity
 
                 ngas = gd[i,j] / (mmw * mh)
@@ -991,7 +992,16 @@ def get_tgrow_numba(vrd,vtd,pd,pid,pa,gT,gd,tgrow,mmw,ii,io,ji,jo,Nparticles):
 
                 VbmXa = (Vbm * pa[i,j,k])
 
-                min_diff = min(VbmXa,D_bm)
+                ##min_diff = min(VbmXa,D_bm) #this operation in Ormel & Min (2019) is not correct
+
+                ### we're going to use the "particle" Knusden number to transition between balstic and diffusive limit
+
+                Kn_g = l_mfp/pa[i,j,k] # the gas' Knusden number relative to the particle
+                beta = 1. + Kn_g * (1.257+0.4*math.exp(-1.1/Kn_g)) # the slip factor (Equation 8 Ohno and Okuzumi 2018) 
+                #Kn_p = beta / (6.*eta *pa[i,j,k]**2.) * np.sqrt(par_mass*kb*gT[i,j]/(2.*math.pi)) - not needed, but useful for debugging
+
+                min_diff = min(VbmXa,D_bm*beta) # note the inclusion of the slip factor here to make sure diffusive BM not used when Knp<~1
+
 
                 inv_tgrow += 0.5*4.*math.pi * min_diff * pa[i,j,k] * par_num_dens
 
