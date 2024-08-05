@@ -173,41 +173,49 @@ def get_Qext_al(size,Tstar):
    
     return Qext
 
-def get_Qpr_tholins(size):
-    
-    # fit to the radiation pressure efficiency for tholins 
-    # use numexpr for rapid evaluation of large arrays
-    # size is an array in cm
 
-    a1 = 1.15019735
-    a2 = 1.94998013
-    a3 = 0.60728454
-    a4 = 1.01879291
-    a5 = 0.57491265
-    a6 = 1.9022088
-    a7 = 0.25589791
-    
-    Qpr = ne.evaluate("1./(1.+(size/(a1*1e-4))**(-1.)) + a2 /(exp(1e-4*a3/size)**a4+(size/(a5*1e-4))**a6)**a7")
-   
-    return Qpr
-    
-def get_Qext_tholins(size):
+def get_Qext_tholins(size,Tstar):
     
     # fit to the extinction efficiency for soot 
     # use numexpr for rapid evaluation of large arrays
     # size is an array in cm
 
-    a1 = 1.15021488
-    a2 = 5.43945747
-    a3 = 1.81603096
-    a4 = 3.02707175
-    a5 = 0.00908456
-    a6 = 5.38647476
-    a7 = 0.03847449
+    a1 = 2.38294902e-01
+    a2 = 5.91737671e+00
+    a3 = 2.58515448e+00
+    a4 = 2.58515195e+00
+    a5 = 1.45082334e-04
+    a6 = 3.76766520e+00
+    a7 = 3.73838983e-02
+    a8 = 1.52945694e+00
+
+    Tfactor = Tstar / 5777.
     
-    Qext = ne.evaluate("1./(1.+(size/(a1*1e-4))**(-1.)) + a2 /(exp(1e-4*a3/size)**a4+(size/(a5*1e-4))**a6)**a7")
+    Qext = ne.evaluate("1./(1.+(size*Tfactor/(a1*1e-4))**(-a8)) + a2 /(exp(1e-4*a3/size/Tfactor)**a4+(size*Tfactor/(a5*1e-4))**a6)**a7")
    
     return Qext
+
+
+def get_Qpr_tholins(size,Tstar):
+
+    # fit to the radiation pressure efficiency for soot 
+    # use numexpr for rapid evaluation of large arrays
+    # size is an array in cm
+
+    a1 = 4.73264349
+    a2 = 1.83301403
+    a3 = 0.65091085
+    a4 = 0.64829428
+    a5 = 0.439601
+    a6 = 1.96553458
+    a7 = 0.36181274
+    a8 = 0.73242457
+
+    Tfactor = Tstar / 5777.
+    
+    Qpr = ne.evaluate("1./(1.+(size*Tfactor/(a1*1e-4))**(-a8)) + a2 /(exp(1e-4*a3/size/Tfactor)**a4+(size*Tfactor/(a5*1e-4))**a6)**a7")
+   
+    return Qpr
     
 
 
