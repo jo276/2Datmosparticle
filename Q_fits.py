@@ -133,7 +133,7 @@ def get_Qpr_silFe(size,Tstar):
 
 def get_Qpr_al(size,Tstar):
     
-    # fit to the radiation pressure efficiency for soot 
+    # fit to the radiation pressure efficiency for corundum
     # use numexpr for rapid evaluation of large arrays
     # size is an array in cm
 
@@ -154,7 +154,7 @@ def get_Qpr_al(size,Tstar):
 
 def get_Qext_al(size,Tstar):
     
-    # fit to the extinction efficiency for soot 
+    # fit to the extinction efficiency for corundum 
     # use numexpr for rapid evaluation of large arrays
     # size is an array in cm
 
@@ -176,7 +176,7 @@ def get_Qext_al(size,Tstar):
 
 def get_Qext_tholins(size,Tstar):
     
-    # fit to the extinction efficiency for soot 
+    # fit to the extinction efficiency for tholins
     # use numexpr for rapid evaluation of large arrays
     # size is an array in cm
 
@@ -198,7 +198,7 @@ def get_Qext_tholins(size,Tstar):
 
 def get_Qpr_tholins(size,Tstar):
 
-    # fit to the radiation pressure efficiency for soot 
+    # fit to the radiation pressure efficiency for tholins
     # use numexpr for rapid evaluation of large arrays
     # size is an array in cm
 
