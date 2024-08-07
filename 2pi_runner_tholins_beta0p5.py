@@ -79,8 +79,14 @@ Sdot = Haze_flux
 
 fd.par_dens[:,:,0] = 1e-40
 
-fd.gas_vth[:] = 0.#np.outer(1e2 + 1e5 * np.exp(-np.log10(ry.tau_b_gas[:,1])**2./(2.*1.**2.)),np.ones(gd.NTH+3))
-#print (fd.gas_vth[10,10])
+fd.gas_vth[:] = 0.
+vmax=1e5
+v1 = vmax * np.exp(-np.log10(ry.tau_b_gas[:,1])**2./(2.*1.5**2.))
+v2 = vmax * np.exp(-np.log10(ry.tau_b_gas[:,1])**2./(2.*0.7**2.))
+vuse = v1
+vuse[ry.tau_b_gas[:,1] >1] = v2[ry.tau_b_gas[:,1] > 1]
+
+fd.gas_vth=np.outer(-vuse,np.ones(gd.NTH+3))
 
 bd.update_boundary(gd,fd)
 

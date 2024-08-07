@@ -15,7 +15,9 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_aerosol_flag=Fals
 
     # no_haze_flag allows the switching off of the hazes to calculate pure gas spectra
 
-    Rp = np.zeros(np.size(wav))
+    Rp1 = np.zeros(np.size(wav)) # hemisphere 1
+    Rp2 = np.zeros(np.size(wav)) # hemisphere 2
+    Rp_combined = np.zeros(np.size(wav)) # combined 
 
     for i in range(np.size(wav)):
 
@@ -51,15 +53,19 @@ def get_transmission_spectrum(grid,field,rays,get_Q_ext,wav,no_aerosol_flag=Fals
         else:
             tau_gas = 0.
 
-        # now calculate Rp in transmission
-        Flux_obs = np.trapz(2.*np.pi*rays.Xrays[rays.id_terminator:]*np.exp(-rays.tau_end[rays.id_terminator:]-tau_gas),rays.Xrays[rays.id_terminator:])
+        # now calculate Rp in transmission for hemisphere 1
+        Flux_obs1 = np.fabs(np.trapz(np.pi*rays.Xrays[rays.id_terminator:]*np.exp(-rays.tau_end1[rays.id_terminator:]-tau_gas),rays.Xrays[rays.id_terminator:]))
+        Flux_obs2 = np.fabs(np.trapz(np.pi*rays.Xrays2[rays.id_terminator:]*np.exp(-rays.tau_end2[rays.id_terminator:]-tau_gas),rays.Xrays2[rays.id_terminator:]))
+        Flux_obs = Flux_obs1 + Flux_obs2
         Flux_exp = np.pi*rays.Xrays[-1]**2.
 
         #Area_effective = np.trapz(2.*np.pi*rays.Xrays[rays.id_terminator:]*(1.-np.exp(-rays.tau_end[rays.id_terminator:])),rays.Xrays[rays.id_terminator:]) + np.pi * rays.Xrays[rays.id_terminator]**2.
 
-        Rp[i] = rays.Xrays[-1]*np.sqrt(1.-Flux_obs/Flux_exp) # np.sqrt(Area_effective/np.pi) 
+        Rp_combined[i] = rays.Xrays[-1]*np.sqrt(1.-Flux_obs/Flux_exp) # np.sqrt(Area_effective/np.pi) 
+        Rp1[i] = rays.Xrays[-1]*np.sqrt(1.-Flux_obs1/(0.5*Flux_exp)) # np.sqrt(Area_effective/np.pi)
+        Rp2[i] = rays.Xrays[-1]*np.sqrt(1.-Flux_obs2/(0.5*Flux_exp))
 
-    return Rp
+    return Rp_combined,Rp1,Rp2
 
 def get_eclipse_spectrum(grid,field,rays,get_Q_back,get_Q_ext,wav,no_haze_flag=False):
 
