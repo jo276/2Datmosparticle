@@ -28,8 +28,8 @@ Rp = 1.39626304e34
 
 
 #### Simulation parameters
-Nsteps = 100000#20000001# total number of timesteps to run
-Ndump = 200#50000 # output every this number of timesteps
+Nsteps = 20000001# total number of timesteps to run
+Ndump = 50000 # output every this number of timesteps
 Nrat = 20 # update radiative transfer this number of time-steps
 Short_Fric = False ## whether to use short friction time approx or not
 
