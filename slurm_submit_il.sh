@@ -69,7 +69,7 @@ workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the
 #! safe value to no more than 56:
 
 conda activate particle_haze
-export OMP_NUM_THREADS=76
+export OMP_NUM_THREADS=38
 #! Number of MPI tasks to be started by the application per node and in total (do not change):
 #np=$[${numnodes}*${mpi_tasks_per_node}]
 
