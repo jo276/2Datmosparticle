@@ -19,7 +19,7 @@
 #! How many (MPI) tasks will there be in total? (<= nodes*56)
 #! The Cascade Lake (cclake) nodes have 56 CPUs (cores) each and
 #! 3420 MiB of memory per CPU.
-#SBATCH --ntasks=38
+#SBATCH --ntasks=19
 #! How much wallclock time will be required?
 #SBATCH --time=01:00:00
 #! What types of email messages do you wish to receive?
@@ -69,7 +69,7 @@ workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the
 #! safe value to no more than 56:
 
 conda activate particle_haze
-export OMP_NUM_THREADS=38
+export OMP_NUM_THREADS=19
 #! Number of MPI tasks to be started by the application per node and in total (do not change):
 #np=$[${numnodes}*${mpi_tasks_per_node}]
 
