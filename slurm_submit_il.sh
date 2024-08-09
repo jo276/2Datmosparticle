@@ -13,7 +13,7 @@
 #SBATCH -J cpujob
 #! Which project should be charged:
 #SBATCH -A dirac-dp100-cpu
-#SBATCH -p iceclake
+#SBATCH -p icelake
 #! How many whole nodes should be allocated?
 #SBATCH --nodes=1
 #! How many (MPI) tasks will there be in total? (<= nodes*56)
